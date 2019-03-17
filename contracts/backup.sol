@@ -7,7 +7,6 @@ contract CertiChain {
         string cId;
         string hash;
         string location;
-        uint sId;
     }
 
     struct Student {
@@ -16,25 +15,47 @@ contract CertiChain {
         string[] certificateId;
     }
 
+    struct Staff{
+        uint sId;
+        string accountAddress;
+        string[] certificateId;
+    }
 
     mapping(string => Student) studentMapping;
     mapping(string => Certificate) certificateMapping;
+    mapping(uint => Staff) staffMapping;
 
     //add certificate data and the faculty who is adding the certificates
-    function setCertificateData(string _cId,string _hash,string _location,uint _sId) public payable returns(uint){
+    function setCertificateData(string _cId,string _hash,string _location) public payable returns(uint){
 
         Certificate certificate;
         certificate.cId =_cId;
         certificate.hash =_hash;
         certificate.location =_location;
-        certificate.sId = _sId;
         certificateMapping[_cId] = certificate; 
         return 1;
     }
+
+
+    function staffRegisteration(uint _sId,string _address) public payable returns(uint){
+
+        Staff staff;
+        staff.sId = _sId;
+        staff.accountAddress = _address;
+        staffMapping[_sId] = staff; 
+        return 1;
+    }
+
+
+    function setStaff(string _cId,uint _sId) public payable returns(uint){
+        staffMapping[_sId].certificateId.push(_cId); 
+        return 1;
+    }
+
   
 
     //Retrieve the location of the certificate
-    function getCertificateLocation(string _cId,string _hash) public view returns (string,uint) {
+    function getCertificateData(string _cId,string _hash) public view returns (string,uint) {
         
         string hashInserted = certificateMapping[_cId].hash;
         bool flag = compareStrings(hashInserted,_hash);
@@ -54,8 +75,8 @@ contract CertiChain {
     }
 
     //find all the certificates given by a staff
-    function getStaff(string _cId) public view returns (uint) {
-        return (certificateMapping[_cId].sId);
+    function getStaff(uint _sId) public view returns (string[]) {
+        return (staffMapping[_sId].certificateId);
     }
    
 
