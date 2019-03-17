@@ -53,6 +53,7 @@ create table events
     name varchar(50) not null,
     club varchar(20) not null,
     date varchar(20) not null,
+    filename varchar(50) not null default 'none',
     faculty varchar(20) not null,
     reg_date varchar(100) not null
 
@@ -65,10 +66,13 @@ create table stud_event
     eId  int(20) not null,
     certificateId varchar(50) not null,
     hashId varchar(50) not null,
+    location varchar(300) not null,
     foreign key (username) references student(username) ON DELETE CASCADE,
     foreign key (eId) references events(eId) ON DELETE CASCADE
 
 )ENGINE=InnoDB;
+
+alter table stud_event add column location varchar(300) not null;
 
 //csv table
 
@@ -103,18 +107,18 @@ create table hod_approval (
     branch varchar(10) not null,
     hodId int(20) not null,
     csv_path varchar(100) not null, 
-    isApproved int(5) not null,
+    isApproved int(5) not null default 0,
     foreign key (eId) references events(eId) ON DELETE CASCADE,
     foreign key (staffId) references staff(sId) ON DELETE CASCADE,
     foreign key (hodId) references staff(sId) ON DELETE CASCADE 
 
 )ENGINE=InnoDB;
 
+insert into hod_approval(staffId,eId,branch,hodId,csv_path) values(7,501,"IT",2,"path");
 
-insert into 
+select sId,fname,lname from staff where role = "hod" and branch in (select branch from staff where sId = 7);
 
-select branch from staff where role = "hod" and sId in (select branch from staff where sId = );
-
+insert into hod_approval values();
 
 create table principal_approval ( 
 
@@ -123,7 +127,7 @@ create table principal_approval (
     branch varchar(10) not null, 
     hodId int(20) not null, 
     csv_path varchar(100) not null, 
-    isApproved int(5) not null,
+    isApproved int(5) not null default 0,
     foreign key (eId) references events(eId) ON DELETE CASCADE, 
     foreign key (staffId) references staff(sId) ON DELETE CASCADE,
     foreign key (hodId) references staff(sId) ON DELETE CASCADE 
