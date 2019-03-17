@@ -21,7 +21,7 @@ Right now, there are many ways of creating forge certificates with the desired s
   c. Bootstrap
   d. Javascript
   
-3. Server:      
+3. Server:
   a. NodeJS
   
 
