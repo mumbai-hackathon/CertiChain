@@ -54,8 +54,9 @@ app.use(session({secret:'noneed', resave: false, saveUninitialized: true}));
 app.use(function(req, res, next){
 	res.locals.userId = req.session.userId;
 	res.locals.role = req.session.designation;
-	res.locals.Event_Name = req.session.Event_Name;
-	res.locals.Club_Name = req.session.Club_Name;
+	res.locals.roles = req.session.userId;
+	// res.locals.eId = req.session.eId;
+	// res.locals.jsonObj = req.session.jsonObj;
 	res.locals.status = "400";
 	next();
 });
