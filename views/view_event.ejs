@@ -47,22 +47,30 @@
 		        <td><%= result.name %></td>
 		        <td><%= result.faculty %></td>
 		        <td class="row">
-		        	<button class="btn btn-info" type="button" data-toggle="modal" data-target="#view_event" onclick="showEvent('<%= result.name %>','<%= result.club %>','<%= result.date %>','<%= result.faculty %>','<%= result.reg_date %>')">View</button>
 					
 					<% if(userId == "faculty") {%>
 
+						<button class="btn btn-info" type="button" data-toggle="modal" data-target="#view_event" onclick="showEvent('<%= result.name %>','<%= result.club %>','<%= result.date %>','<%= result.faculty %>','<%= result.reg_date %>')">View</button>
+
 			        	<button class="btn btn-success" type="button" data-toggle="modal" data-target="#edit_event" onclick="editEvent('<%= result.name %>','<%= result.club %>','<%= result.date %>','<%= result.faculty %>','<%= result.eId %>')">Edit</button>
 						
-			        	<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#uploadCSV" onclick="uploadCSV('<%= result.name %>','<%= result.club %>')">Upload CSV</button>
+			        	<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#uploadCSV" onclick="uploadCSV('<%= result.name %>','<%= result.club %>','<%= result.eId %>')">Upload CSV</button>
 						<form method="post">
-			        	<button class="btn btn-warning" type="button" formaction="/sendHOD">Send to HOD</button>
+			        	<!-- <button class="btn btn-warning" type="button" formaction="/sendHOD">Send to HOD</button> -->
 						</form>
-			        	<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteEvent" onclick="delete_event('<%= result.eId %>','<%= result.name %>')">Delete</button>
+			        	<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteEvent" onclick="delete_event('<%= result.eId %>','<%= result.name %>','<%= result.eId %>')">Delete</button>
 
 		        	<% } %>
 
 		        	<% if(userId == "hod") {%>
-		        		<button class="btn btn-warning" type="button">Send to Principal</button>
+		        		<form method="post" action="/faculty/csv2json">
+		        			<input type="hidden" name="event" value="<%= result.name %>">
+		        			<input type="hidden" name="club" value="<%= result.club %>">
+		        			<input type="hidden" name="csv" value="<%= result.filename %>">
+		        			<input type="hidden" name="eId" value="<%= result.eId %>">
+		        			<button class="btn btn-info" type="submit">View</button>
+		        		</form>
+		        		<!-- <button class="btn btn-warning" type="button">Send to Principal</button> -->
 		        	<% } %>
 		        </td>
 		      </tr>
@@ -115,6 +123,8 @@
 				        	<label><h3><strong>Upload a CSV file : </strong></h3></label>
 				        	<input type="hidden" name="Event_Name" id="Event_Name">
 				        	<input type="hidden" name="ClubName" id="ClubName">
+				        	<input type="hidden" name="EventId" id="EventId">
+				        	<input type="hidden" name="StaffId" value="<%= roles %>">
 				        	<input type="file" name="CSVFile">
 				        </div>
 				        
@@ -272,9 +282,10 @@
 		document.getElementById("EventName").innerHTML = eventName;
 	}
 
-	function uploadCSV(eventName, clubName) {
+	function uploadCSV(eventName, clubName, eventId) {
 		document.getElementById("Event_Name").value = eventName;
 		document.getElementById("ClubName").value = clubName;
+		document.getElementById("EventId").value = eventId;
 	}
 
 </script>

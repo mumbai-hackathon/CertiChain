@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>View</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+	<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css'>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<style>	
+		button[type="button"], button[type="submit"]{
+			border-radius: 50px;
+			margin-left: 4vh;
+			cursor: pointer;
+		}
+		/* .table-striped>tbody>tr:nth-child(odd)>td, 
+		.table-striped>tbody>tr:nth-child(odd)>th {
+    		background-color: gray; 
+		} */
+	</style>
+
+</head>
+<body>
+	<div>
+		<% include navbar.ejs ;%>
+	</div>
+
+		<div class="container" style="margin-top:12vh;">
+		    <h2>Faculty List</h2>
+		  <p></p>            
+		  <table class="table">
+		    <thead>
+		      <tr>
+		        <th>Name</th>
+		        <th>Role</th>
+		        <th>View/Accept/Reject</th>
+		      </tr>
+		    </thead>
+		    <% results.forEach(function(result){ %>
+		    <tbody>
+		      <tr>
+		        <td><%= result.fname %> <%= result.lname %></td>
+		        <td><%= result.role %></td>
+		        <td class="row">
+		        	<button class="btn btn-info" type="button" data-toggle="modal" data-target="#view_staff" onclick="showStaff('<%= result.fname %>','<%= result.lname %>','<%= result.role %>','<%= result.email %>','<%= result.contactNo %>','<%= result.regDate %>')">View</button>
+
+		        	<button class="btn btn-success" type="button" data-toggle="modal" data-target="#edit_staff" onclick="editStaff('<%= result.fname %>','<%= result.lname %>','<%= result.role %>','<%= result.email %>','<%= result.contactNo %>','<%= result.password %>','<%= result.sId %>')">Edit</button>
+
+		        	<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteStaff" onclick="delete_staff('<%= result.sId %>','<%= result.fname %>','<%= result.lname %>')">Delete</button>
+		        </td>
+		      </tr>
+		      
+		    </tbody>
+
+		    <% }); %>
+		  </table>
+
+		  <div>
+		  		<div class="modal fade" id="deleteStaff" role="dialog">
+				    <div class="modal-dialog">
+				    
+				      <!-- Modal content-->
+				      <div class="modal-content">
+				        <div class="modal-header">
+				        <h4 class="modal-title">Delete Staff</h4>
+				        <button type="button" class="close" data-dismiss="modal">&times;</button>
+				        </div>
+				        <form method="post" action="/faculty/delete_staff">
+					        <div class="modal-body">
+					         	<h4><strong>Do you want to delete <span id="staffName"></span></strong></h4>
+					         	<input type="hidden" name="staffId" id="staffId">
+					        </div>
+					        <div class="modal-footer">
+					        	<button type="submit" class="btn btn-success">Delete</button>
+					        	<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+					        </div>
+				        </form>
+				      </div>
+				      
+				    </div>
+				  </div>
+		  </div>
+
+
+		  	<div>
+
+		    <!-- The Modal -->
+			  	<div class="modal fade" id="view_staff">
+			    <div class="modal-dialog modal-lg">
+			      <div class="modal-content">
+			      
+			        <div class="modal-header">
+			          <h4 class="modal-title">Faculty Profile</h4>
+			          <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        </div>
+			        
+			        <!-- Modal body -->
+			        <div class="modal-body">
+			        	<!-- <h5><strong>Name : </strong><span id="name"></span></h5>
+			        	<p><strong>Role : </strong><span id="role"></span></p>
+			        	<p><strong>E-mail : </strong><span id="email"></span></p>
+			        	<p><strong>Contact Number : </strong><span id="contact"></span></p>
+			        	<p><strong>Register Date : </strong><span id="regDate"></span></p> -->
+						<table class="table table-borderless">
+			        		<tbody>
+			        			<tr>
+			        				<td><h5><strong>Name</strong></h5></td>
+			        				<td><strong>:</strong></td>
+			        				<td><span id="name"></span></td>
+			        			</tr>
+			        			<tr>
+			        				<td><strong>Role</strong></td>
+			        				<td><strong>:</strong></td>
+			        				<td><span id="role"></span></td>
+			        			</tr>
+			        			<tr>
+			        				<td><strong>E-mail</strong></td>
+			        				<td><strong>:</strong></td>
+			        				<td><span id="email"></span></td>
+			        			</tr>
+			        			<tr>
+			        				<td><strong>Contact Number</strong></td>
+			        				<td><strong>:</strong></td>
+			        				<td><span id="contact"></span></td>
+			        			</tr>
+			        			<tr>
+			        				<td><strong>Register Date</strong></td>
+			        				<td><strong>:</strong></td>
+			        				<td><span id="regDate"></span></td>
+			        			</tr>
+			        		</tbody>
+			        	</table>
+
+			        </div>
+			        
+			        <!-- Modal footer -->
+			        <div class="modal-footer">
+			          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			        </div>
+			        
+			     		</div>
+			    	</div>
+			  	</div>
+			  </div>
+
+			<div>
+				
+				<!-- The Modal -->
+			  	<div class="modal fade" id="edit_staff">
+			    <div class="modal-dialog modal-lg">
+			      <div class="modal-content">
+			      
+			        <div class="modal-header">
+			          <h4 class="modal-title">Faculty Edit</h4>
+			          <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        </div>
+
+			        <form action="/faculty/edit_staff_profile" method="post">
+			        
+			        <!-- Modal body -->
+			        <div class="modal-body">
+			        	
+			        		<div class="form-group">
+							    <label for="edit_fname">First name :</label>
+							    <input type="text" class="form-control" id="edit_fname" name="edit_fname">
+							</div>
+							<div class="form-group">
+							    <label for="edit_lname">Last Name :</label>
+							    <input type="text" class="form-control" id="edit_lname" name="edit_lname">
+							</div>
+							<div class="form-group">
+							    <label for="edit_role">Role :</label>
+							    <input type="text" class="form-control" id="edit_role" name="edit_role">
+							</div>
+							<div class="form-group">
+							    <label for="edit_email">Email address :</label>
+							    <input type="email" class="form-control" id="edit_email" name="edit_email">
+							</div>
+							<div class="form-group">
+							    <label for="edit_contactNo">Contact Number :</label>
+							    <input type="tel" class="form-control" id="edit_contactNo" name="edit_contactNo">
+							</div>
+							<div class="form-group">
+							    <label for="edit_password">Password :</label>
+							    <input type="password" class="form-control" id="edit_password" name="edit_password">
+							</div>
+							<div class="form-group">
+							    <input type="hidden" class="form-control" id="fix_id" name="fix_id">
+							</div>
+			        	
+			        	
+			        </div>
+			        
+			        <!-- Modal footer -->
+			        <div class="modal-footer">
+						<button type="submit" class="btn btn-success">Update</button>
+			        	<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			        </div>
+
+			        </form>
+			        
+			     		</div>
+			    	</div>
+			  	</div>
+
+			</div>
+
+		</div>
+
+</body>
+
+<script>
+	function showStaff(fname,lname,role,email,contact,regDate){
+		document.getElementById("name").innerHTML = fname+" "+lname;
+		document.getElementById("role").innerHTML = role;
+		document.getElementById("email").innerHTML = email;
+		document.getElementById("contact").innerHTML = contact;
+		document.getElementById("regDate").innerHTML = regDate;
+	}
+
+	function editStaff(fname,lname,role,email,contact,password,sid){
+		document.getElementById("edit_fname").value = fname;
+		document.getElementById("edit_lname").value = lname;
+		document.getElementById("edit_role").value = role;
+		document.getElementById("edit_email").value = email;
+		document.getElementById("edit_contactNo").value = contact;
+		document.getElementById("edit_password").value = password;
+		document.getElementById("fix_id").value = sid;
+	}
+
+	function delete_staff(staffId, fname, lname) {
+		document.getElementById("staffId").value = staffId;
+		document.getElementById("staffName").innerHTML = fname+" "+lname;
+	}
+
+</script>
+
+</html>
