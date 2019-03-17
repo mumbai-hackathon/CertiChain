@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:background="@color/Cornsilk"
+        >
+
+        <TextView
+            android:id="@+id/csi_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CSI"
+            android:textColor="@color/dark_orange"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            />
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Computer Society of India"
+            android:textColor="@color/cold"/>
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="To provide a conducive platform to learn , share, innovate ideas and to facilitate opensource culture along with research attitude." />
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp"
+        >
+
+        <TextView
+            android:id="@+id/acm_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ACM"
+            android:textColor="@color/dark_orange"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            />
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Association for Computing Machinery"
+            android:textColor="@color/cold"/>
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" This chapter is the largest known student chapter in the campus of DBIT with over 700 members." />
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:background="@color/Cornsilk"
+        >
+
+        <TextView
+            android:id="@+id/domain_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="DOMAIN"
+            android:textColor="@color/dark_orange"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            />
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cold"
+            android:text="To generate interest in the subject of Mathematics amongst students "/>
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="To create awareness about the mathematical way of thinking " />
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp"
+        >
+
+        <TextView
+            android:id="@+id/stc_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="STC"
+            android:textColor="@color/dark_orange"
+            android:textSize="30sp"
+            android:textStyle="bold"
+
+            />
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cold"
+            android:text="software testing club"/>
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No ones give shitt" />
+    </LinearLayout>
+
+    </LinearLayout>
+
+
+</ScrollView>
