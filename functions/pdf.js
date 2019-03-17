@@ -12,9 +12,12 @@ const con = require('../configuration/databaseConnection.js');
 const codes = require('rescode')
 
 
-function pdf(eventname,fname,lname,club){
+function pdf(eventname,fname,lname,rank,club){
    // Create a document
    const doc = new PDFDocument;
+
+   console.log(club);
+   console.log(eventname);
 
    if (!fs.existsSync('./uploads/certificates/'+club)){
    fs.mkdirSync('./uploads/certificates/'+club);
@@ -22,26 +25,29 @@ function pdf(eventname,fname,lname,club){
    if (!fs.existsSync('./uploads/certificates/'+club+'/'+eventname)){
    fs.mkdirSync('./uploads/certificates/'+club+'/'+eventname);
    }
-   rank = "1"
-   if(rank == ""){
-      var title = "Participation"
+   if(rank =="")
+   {
+      var appr = "Participation";
+      var ach = "participated"
    }
-   else{
-      var title = "Appreciation"
-   }
+   else
+   {
+      var appr = "Appreciation";
+      var ach = "achieved rank "+rank;
+   } 
     
    //Fetching the username and eventId from DB 
 
-         database.getEventid(eventname, function(eId){
+         // database.getEventid(eventname, function(eId){
 
-            database.getUserid(fname, lname, function(username){
+         //    database.getUserid(fname, lname, function(username){
 
-               database.createStudevent(randomHash, certificateId, username, eId, function(){
+         //       database.createStudevent(randomHash, certificateId, username, eId, function(){
 
-                  console.log("kaam kar raha hai");
-               })
-            })
-         })
+         //          console.log("kaam kar raha hai");
+         //       })
+         //    })
+         // })
 
    
    // Pipe its output somewhere, like to a file or HTTP response
@@ -60,9 +66,38 @@ function pdf(eventname,fname,lname,club){
    //     if (err) throw err;
    //     console.log("1 record inserted");
    //   });
+doc.image('./images/1.png',535, 0,{
+      fit: [100, 90],
+      
+    });
 
+    doc.image('./images/6.png',190, -7,{
+      fit: [250, 250],
+      
+    });
+    
+    doc.image('./images/2.png',0, 0,{
+      fit: [100, 90],
+      
+    });
 
-   doc.image('./images/dbit.png', 30,90 ,{
+    doc.image('./images/3.png',0, 200,{
+      fit: [100, 90],
+      
+    });
+
+    doc.image('./images/5.png',190, 250,{
+      fit: [250, 250],
+      
+    });
+    
+
+    doc.image('./images/4.png',520, 200,{
+      fit: [100, 90],
+      
+    });
+
+   doc.image('./images/dbit.png', 70,40 ,{
       //fit: [70, 100],
       //align: 'center',
       //valign: 'center',
@@ -72,24 +107,21 @@ function pdf(eventname,fname,lname,club){
    
 
    // Embed a font, set the font size, and render some text
-   doc.fontSize(20)
-      .text('DON BOSCO INSTITUTE OF TECHNOLOGY\n         KURLA WEST, MUMBAI - 400 070', 100, 100);
+   doc.fontSize(16)
+      .text('        DON BOSCO INSTITUTE OF TECHNOLOGY\n                KURLA WEST, MUMBAI - 400 070', 110, 50);
     
    // Add an image, constrain it to a given size, and center it vertically and horizontally
 
   
-  doc.fontSize(20)
-      .text('Certificate of '+title+'',190,180)  
+  doc.fontSize(25)
+      .text('Certificate of '+appr+'',165,120)  
 
-   doc.fontSize(20)
-      .text('This is to certify that Nishant Nimbalkar has secured 1st rank in '+eventname+' organised by '+club+' on 27th of February.', 100, 220,{
-         align : 'center'
-      });
+   doc.fontSize(17).text('       This is to certify that '+fname+' '+lname+' has '+ach+" in "+eventname+" organised by "+club, 30, 180,{
+    align : 'center'});
 
-
-   codes.loadModules(["ean2", "ean5", "ean8", "ean13"]);
-   dataEan8 = codes.create('ean8', certificateId)
-   doc.image(dataEan8, 450, 300, { height : 30, width : 50 } )
+   // codes.loadModules(["ean2", "ean5", "ean8", "ean13"]);
+   // dataEan8 = codes.create('ean8', certificateId)
+   // doc.image(dataEan8, 450, 300, { height : 30, width : 50 } )
 
    // Add another page
    // doc.addPage()

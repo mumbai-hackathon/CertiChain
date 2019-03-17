@@ -158,4 +158,38 @@ function deleteRecruiter(recruiterId,cb){
 			});	
 }
 
-module.exports = { staffRegistration, recruiterRegistration, eventRegistration, staffLogin, recruiterLogin, getEventsParticipated, setRequestList ,getStaffId, getRecruiterId, getStaffDetails, editStaff,getRecruiterDetails,editRecruiter, getEventsDetails, editEvents, deleteStaff, deleteEvent, deleteRecruiter  }
+
+function getHodFromFaculty(sId,cb){
+
+		  	var sql = "select sId,fname,lname,branch from staff where role = 'hod' and branch in (select branch from staff where sId = '"+sId+"');";
+			con.query(sql,function(err,result,fields){
+			cb(err,result);
+			});	
+}
+
+function setHodApproval(staffId,eId,branch,hodId,csv_path,cb){
+
+		  	var sql = "insert into hod_approval(staffId,eId,branch,hodId,csv_path)  values('"+staffId+"','"+eId+"','"+branch+"','"+hodId+"','"+csv_path+"');";
+			con.query(sql,function(err,result,fields){
+			cb(err,result);
+			});	
+}
+
+
+function setLocation(eId,filename,cb){
+
+		  	var sql = "UPDATE events SET filename = '"+filename+"' where eId = '"+eId+"' ;";
+			con.query(sql,function(err,result,fields){
+			cb(err,result);
+			});	
+}
+
+function getEvent(eId,cb){
+
+		  	var sql = "select name,club,filename from events where eId = '"+eId+"' ;";
+			con.query(sql,function(err,result,fields){
+			cb(err,result);
+			});	
+}
+
+module.exports = { staffRegistration, recruiterRegistration, eventRegistration, staffLogin, recruiterLogin, getEventsParticipated, setRequestList ,getStaffId, getRecruiterId, getStaffDetails, editStaff,getRecruiterDetails,editRecruiter, getEventsDetails, editEvents, deleteStaff, deleteEvent, deleteRecruiter, getHodFromFaculty, setHodApproval,setLocation, getEvent  }
