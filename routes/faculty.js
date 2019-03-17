@@ -66,11 +66,37 @@ router.post('/upload',upload.single('CSVFile'),(req,res)=>{
 	console.log(req.body.Event_Name);
 	// console.log(global.Club_Name);
 	console.log(req.body.ClubName);
-
+	var sId = req.body.StaffId;
+	var eId = req.body.EventId;
+	console.log(req.file.path)
+	console.log("staffid "+sId+" and eventId "+eId);
+	var temp = req.file.destination.split('.')
+	var temp2 = temp[1]
+	console.log("dsa"+temp)
+	console.log(temp2) 
+	var csv_path = "192.168.43.19/CertiChain"+temp2+'/'+req.file.originalname;
+	console.log(csv_path);
 	console.log("abhi HOD ke pas ja");
 
-	
-	
+	database.getHodFromFaculty(sId,function(err,result){
+		if(err) throw err;
+		console.log(result);
+		console.log(result[0].branch);
+		var branch = result[0].branch;
+		var hodId = result[0].sId;
+		console.log(result[0].sId);
+
+		database.setHodApproval(sId,eId,branch,hodId,csv_path,function(err,result1){
+			if(err) throw err;	
+			console.log(result1);
+			database.setLocation(eId,req.file.originalname,function(err,result){
+				if(err) throw err
+				//console.log(res)
+			})
+		})
+
+	})
+
 	res.redirect("view_event");
   
 });
@@ -104,7 +130,10 @@ router.post('/csv2json',(req,res)=>{
 
 	var filename = req.body.csv;//"student.csv"
 	var event = req.body.event;//"Treasure Hunt"
-	var club = req.body.club//"Domain"
+	var club = req.body.club;//"Domain"
+	var eId = req.body.eId;
+	console.log("UI "+filename,event,club)
+
 	const csvFilePath='./uploads/csv/'+club+'/'+event+'/'+filename;
 
 	csv()
@@ -132,14 +161,55 @@ router.post('/csv2json',(req,res)=>{
 
 	    for (var i = 0; i < jsonObj.length; i++) {
 	    
-	    	console.log(jsonObj[i].name,jsonObj[i].rank)
+	    	console.log(jsonObj[i].fname,jsonObj[i].lname,jsonObj[i].year,jsonObj[i].branch,jsonObj[i].rank)
 	    	//pdfObj.pdf(event,jsonObj[i].fname,jsonObj[i].lname,club);
 	    }
+
+	 //var jsonObj1 = JSON.parse(jsonObj);
+	//console.log("tghfghkjhfv"+jsonObj1);
+	res.render("view_participants",{userId: req.session.designation,eId: req.body.eId, jsonObj: jsonObj});
 	});
 
-	res.render("home");
+
 
 })
+
+//generate PDF
+
+router.post('/generateCertificate',(req,res)=>{
+
+	var eId = req.body.EventId;
+	database.getEvent(eId,function(err,result){
+
+	if(err) throw err;
+		console.log(result)
+		var filename = result[0].filename//"student.csv"
+		var event = result[0].name//"New Event"
+		var club = result[0].club//"CSI"
+		console.log(filename);
+		console.log(event)
+		console.log(club)
+
+		const csvFilePath='./uploads/csv/'+club+'/'+event+'/'+filename;
+
+		csv()
+		.fromFile(csvFilePath)
+		.then((jsonObj)=>{
+		    console.log(jsonObj);
+
+		    for (var i = 0; i < jsonObj.length; i++) {
+		    
+		    	pdfObj.pdf(event,jsonObj[i].fname,jsonObj[i].lname,jsonObj[i].rank,club);
+
+		    }
+		    res.redirect("view_event");
+		})
+
+	})
+	//console.log(req.body.EventId);
+
+	//res.render("home");
+});
 
 router.get('/home',(req,res)=>{
 	//mail.sendMail("1234","leeaanair@gmail.com");
@@ -147,7 +217,7 @@ router.get('/home',(req,res)=>{
 	if (req.session.designation) {
 		console.log(req.session.designation);
 		console.log("in session");
-		res.render("home", {userId: req.session.designation});
+		res.render("home", {userId: req.session.designation, roles: req.session.roles});
 	}
 	else{
 		console.log("out session");
@@ -187,8 +257,10 @@ router.post('/login',(req,res)=>{
 
 				if(hash == temp2_pass){
 					req.session.userId = req.body.uname;
+					req.session.roles = req.body.uname;
 					req.session.designation = temp2_role;
 					console.log(req.session.userId)
+					console.log(req.session.roles);
 					console.log(req.session.designation)
 					console.log("Correct password"+temp_pass,temp2_role);
 					res.redirect("home");
@@ -220,9 +292,11 @@ router.post('/login',(req,res)=>{
 
 				if(hash == temp2_pass){
 					req.session.userId = req.body.uname;
+					req.session.roles = req.body.uname;
 					console.log(optradio);
 					req.session.designation = optradio;
 					console.log(req.session.userId)
+					console.log(req.session.roles);
 					console.log(req.session.designation)
 					console.log("Correct password"+temp_pass);
 					res.redirect("home");
@@ -528,6 +602,7 @@ router.get("/view_recruiter", function(req,res){
 
 		database.getRecruiterDetails(function(err,result){
 			if (err) throw err;
+			console.log(result)
 			res.render("view_recruiter", {userId: req.session.designation, results: result});
 		})
 	}
