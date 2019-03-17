@@ -32,26 +32,26 @@ app.set('view engine','ejs');
 app.get('/',(req,res)=>{
 
 	var filename = "student.csv"
-	var event = "Treasure Hunt"
-	var club = "Domain"
+	var event = "New Event"
+	var club = "CSI"
 	const csvFilePath='./uploads/csv/'+club+'/'+event+'/'+filename;
 
 	csv()
 	.fromFile(csvFilePath)
 	.then((jsonObj)=>{
 	    console.log(jsonObj);
-	    var event = "Treasure Hunt";
-	    var club = "Domain";
+	    // var event = "Treasure Hunt";
+	    // var club = "Domain";
 	    for (var i = 0; i < jsonObj.length; i++) {
 	    
-	    	pdfObj.pdf(event,jsonObj[i].fname,jsonObj[i].lname,club);
+	    	pdfObj.pdf(event,jsonObj[i].fname,jsonObj[i].lname,jsonObj[i].rank,club);
 
 	    }
 	})
 
 
 
-	res.render("home");
+	//res.render("home");
 });
 
 
