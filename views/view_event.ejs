@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>View</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+	<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css'>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<style>	
+		button[type="button"], button[type="submit"]{
+			border-radius: 50px;
+			margin-left: 4vh;
+			cursor: pointer;
+		}
+		/* .table-striped>tbody>tr:nth-child(odd)>td, 
+		.table-striped>tbody>tr:nth-child(odd)>th {
+    		background-color: gray; 
+		} */
+	</style>
+
+</head>
+<body>
+	<div>
+		<% include navbar.ejs ;%>
+	</div>
+
+		<div class="container" style="margin-top:12vh;">
+		    <h2>Recruiter List</h2>
+		  <p></p>            
+		  <table class="table">
+		    <thead>
+		      <tr>
+		        <th>Event Name</th>
+		        <th>Person Incharge</th>
+		        <th>View/Accept/Reject</th>
+		      </tr>
+		    </thead>
+		    <% results.forEach(function(result){ %>
+		    <tbody>
+		      <tr>
+		        <td><%= result.name %></td>
+		        <td><%= result.faculty %></td>
+		        <td class="row">
+		        	<button class="btn btn-info" type="button" data-toggle="modal" data-target="#view_event" onclick="showEvent('<%= result.name %>','<%= result.club %>','<%= result.date %>','<%= result.faculty %>','<%= result.reg_date %>')">View</button>
+					
+					<% if(userId == "faculty") {%>
+
+			        	<button class="btn btn-success" type="button" data-toggle="modal" data-target="#edit_event" onclick="editEvent('<%= result.name %>','<%= result.club %>','<%= result.date %>','<%= result.faculty %>','<%= result.eId %>')">Edit</button>
+						
+			        	<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#uploadCSV" onclick="uploadCSV('<%= result.name %>','<%= result.club %>')">Upload CSV</button>
+						<form method="post">
+			        	<button class="btn btn-warning" type="button" formaction="/sendHOD">Send to HOD</button>
+						</form>
+			        	<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteEvent" onclick="delete_event('<%= result.eId %>','<%= result.name %>')">Delete</button>
+
+		        	<% } %>
+
+		        	<% if(userId == "hod") {%>
+		        		<button class="btn btn-warning" type="button">Send to Principal</button>
+		        	<% } %>
+		        </td>
+		      </tr>
+		      
+		    </tbody>
+
+		    <% }); %>
+		  </table>
+
+		  <div>
+		  		<div class="modal fade" id="deleteEvent" role="dialog">
+				    <div class="modal-dialog">
+				    
+				      <!-- Modal content-->
+				      <div class="modal-content">
+				        <div class="modal-header">
+				        <h4 class="modal-title">Delete Event</h4>
+				        <button type="button" class="close" data-dismiss="modal">&times;</button>
+				        </div>
+				        <form method="post" action="/faculty/delete_event">
+					        <div class="modal-body">
+					         	<h4><strong>Do you want to delete event <span id="EventName"></span></strong></h4>
+					         	<input type="hidden" name="eventId" id="eventId">
+					        </div>
+					        <div class="modal-footer">
+					        	<button type="submit" class="btn btn-success">Delete</button>
+					        	<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+					        </div>
+				        </form>
+				      </div>
+				      
+				    </div>
+				  </div>
+		  </div>
+
+		  <div>
+		    <!-- The Modal -->
+			  	<div class="modal fade" id="uploadCSV">
+			    <div class="modal-dialog">
+			      <div class="modal-content">
+			      
+			        <div class="modal-header">
+			          <h4 class="modal-title">Upload CSV</h4>
+			          <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        </div>
+			        
+			        <form action="/faculty/upload" method="post" enctype="multipart/form-data">
+				        <!-- Modal body -->
+				        <div class="modal-body">
+				        	<label><h3><strong>Upload a CSV file : </strong></h3></label>
+				        	<input type="hidden" name="Event_Name" id="Event_Name">
+				        	<input type="hidden" name="ClubName" id="ClubName">
+				        	<input type="file" name="CSVFile">
+				        </div>
+				        
+				        <!-- Modal footer -->
+				        <div class="modal-footer">
+							<button type="submit" class="btn btn-success">Submit</button>
+				        	<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+				        </div>
+
+			        </form>
+			        
+			     		</div>
+			    	</div>
+			  	</div>
+			  </div>
+
+		  	<div>
+
+		    <!-- The Modal -->
+			  	<div class="modal fade" id="view_event">
+			    <div class="modal-dialog modal-lg">
+			      <div class="modal-content">
+			      
+			        <div class="modal-header">
+			          <h4 class="modal-title">Event Details</h4>
+			          <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        </div>
+			        
+			        <!-- Modal body -->
+			        <div class="modal-body">
+			        	<!-- <h5><strong>Event Name : </strong><span id="event_name"></span></h5>
+			        	<p><strong>Person Incharge : </strong><span id="faculty_name"></span></p>
+			        	<p><strong>Club Name : </strong><span id="club_name"></span></p>
+			        	<p><strong>Event Date : </strong><span id="event_date"></span></p>
+			        	<p><strong>Register Date : </strong><span id="RregDate"></span></p> -->
+
+			        	<table class="table table-borderless">
+			        		<tbody>
+			        			<tr>
+			        				<td><h5><strong>Event Name</strong></h5></td>
+			        				<td><strong>:</strong></td>
+			        				<td><span id="event_name"></span></td>
+			        			</tr>
+			        			<tr>
+			        				<td><strong>Person Incharge : </strong></td>
+			        				<td><strong>:</strong></td>
+			        				<td><span id="faculty_name"></span></td>
+			        			</tr>
+			        			<tr>
+			        				<td><strong>Club Name : </strong></td>
+			        				<td><strong>:</strong></td>
+			        				<td><span id="club_name"></span></td>
+			        			</tr>
+			        			<tr>
+			        				<td><strong>Event Date : </strong></td>
+			        				<td><strong>:</strong></td>
+			        				<td><span id="event_date"></span></td>
+			        			</tr>
+			        			<tr>
+			        				<td><strong>Register Date : </strong></td>
+			        				<td><strong>:</strong></td>
+			        				<td><span id="RregDate"></span></td>
+			        			</tr>
+			        		</tbody>
+			        	</table>
+			        </div>
+			        
+			        <!-- Modal footer -->
+			        <div class="modal-footer">
+			          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			        </div>
+			        
+			     		</div>
+			    	</div>
+			  	</div>
+			  </div>
+
+			<div>
+				
+				<!-- The Modal -->
+			  	<div class="modal fade" id="edit_event">
+			    <div class="modal-dialog modal-lg">
+			      <div class="modal-content">
+			      
+			        <div class="modal-header">
+			          <h4 class="modal-title">Event Edit</h4>
+			          <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        </div>
+
+			        <form action="/faculty/edit_event_data" method="post">
+			        
+			        <!-- Modal body -->
+			        <div class="modal-body">
+			        	
+			        		<div class="form-group">
+							    <label for="edit_eventName">Event Name :</label>
+							    <input type="text" class="form-control" id="edit_eventName" name="edit_eventName">
+							</div>
+							<div class="form-group">
+							    <label for="edit_facultyName">Faculty Name :</label>
+							    <input type="tel" class="form-control" id="edit_facultyName" name="edit_facultyName">
+							</div>
+							<div class="form-group">
+							    <label for="edit_clubName">Club Name :</label>
+							    <input type="text" class="form-control" id="edit_clubName" name="edit_clubName">
+							</div>
+							<div class="form-group">
+							    <label for="edit_eventDate">Event Date :</label>
+							    <input type="date" class="form-control" id="edit_eventDate" name="edit_eventDate">
+							</div>
+							<div class="form-group">
+							    <input type="hidden" class="form-control" id="fix_Eid" name="fix_Eid">
+							</div>
+			        	
+			        	
+			        </div>
+			        
+			        <!-- Modal footer -->
+			        <div class="modal-footer">
+						<button type="submit" class="btn btn-success">Update</button>
+			        	<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			        </div>
+
+			        </form>
+			        
+			     		</div>
+			    	</div>
+			  	</div>
+
+			</div>
+
+		</div>
+
+</body>
+
+<script>
+	function showEvent(eventName,clubName,eventDate,facultyName,RregDate){
+		document.getElementById("event_name").innerHTML = eventName;
+		document.getElementById("faculty_name").innerHTML = facultyName;
+		document.getElementById("club_name").innerHTML = clubName;
+		document.getElementById("event_date").innerHTML = eventDate;
+		document.getElementById("RregDate").innerHTML = RregDate;
+	}
+
+	function editEvent(eventName,clubName,eventDate,facultyName,eid){
+		document.getElementById("edit_eventName").value = eventName;
+		document.getElementById("edit_facultyName").value = facultyName;
+		document.getElementById("edit_clubName").value = clubName;
+		document.getElementById("edit_eventDate").value = eventDate;
+		document.getElementById("fix_Eid").value = eid;
+	}
+
+	function delete_event(eventId, eventName) {
+		document.getElementById("eventId").value = eventId;
+		document.getElementById("EventName").innerHTML = eventName;
+	}
+
+	function uploadCSV(eventName, clubName) {
+		document.getElementById("Event_Name").value = eventName;
+		document.getElementById("ClubName").value = clubName;
+	}
+
+</script>
+
+</html>
