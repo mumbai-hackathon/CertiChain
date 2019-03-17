@@ -34,5 +34,3 @@ Right now, there are many ways of creating forge certificates with the desired s
 	nodemon app.js
 	
 ```
-
-	
