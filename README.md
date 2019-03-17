@@ -24,4 +24,10 @@ Right now, there are many ways of creating forge certificates with the desired s
 3. Server:
   a. NodeJS
   
-
+## Installation
+1.  Make sure nodeJS and npm is installed
+2.  2. Install Dependencies
+```
+	$ npm install
+```
+3. 
