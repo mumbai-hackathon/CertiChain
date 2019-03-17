@@ -1,0 +1,168 @@
+1-Principal
+2-HOD
+3-TPO
+4-Faculty
+
+create table student
+(
+    username varchar(30) primary key,
+    fname varchar(30) not null,
+    lname varchar(30) not null,
+    password varchar(50) not null,
+    email varchar(30) not null,
+    contactNo bigint(60) not null,
+    branch varchar(20) not null,
+    year varchar(10) not null,
+    regDate varchar(60) not null
+ )ENGINE=InnoDB;
+
+
+//isRight 
+
+ create table staff
+ (
+     sId int(20) auto_increment primary key,
+     fname varchar(30) not null,
+     lname varchar(30) not null,
+     branch varchar(10) not null default 'none',
+     email varchar(30) not null,
+     password varchar(60) not null,
+     contactNo bigint(50) not null,
+     role int(10) not null,
+     regDate varchar(60) not null
+  
+ )ENGINE=InnoDB auto_increment = 1;
+
+ alter table staff modify column role varchar(50);
+
+create table recruiter
+(
+    rId int(20) auto_increment primary key,
+    company varchar(20) not null,
+    name varchar(20) not null,
+    contactNo bigint(50) not null,
+    password varchar(60) not null,
+    regDate varchar(60) not null,
+    email varchar(30) not null
+
+)ENGINE=InnoDB auto_increment = 1000;
+
+create table events
+(
+    eId int(20) auto_increment primary key,
+    name varchar(50) not null,
+    club varchar(20) not null,
+    date varchar(20) not null,
+    faculty varchar(20) not null,
+    reg_date varchar(100) not null
+
+)ENGINE=InnoDB auto_increment = 500;
+
+
+create table stud_event
+(
+    username varchar(30) not null,
+    eId  int(20) not null,
+    certificateId varchar(50) not null,
+    hashId varchar(50) not null,
+    foreign key (username) references student(username) ON DELETE CASCADE,
+    foreign key (eId) references events(eId) ON DELETE CASCADE
+
+)ENGINE=InnoDB;
+
+//csv table
+
+create table csv
+(
+    eId int(20) not null,
+    location varchar(100) not null,
+    foreign key (eId) references events(eId) ON DELETE CASCADE
+)ENGINE=InnoDB;
+
+
+
+
+create table request_list
+(
+
+    rId int(20) not null,
+    eId int(20) not null,
+    username varchar(30) not null,
+    status int(5) not null default 0,
+    foreign key (username) references student(username) ON DELETE CASCADE,
+    foreign key (eId) references events(eId) ON DELETE CASCADE,
+    foreign key (rId) references recruiter(rId) ON DELETE CASCADE
+
+)ENGINE=InnoDB;
+
+
+create table hod_approval ( 
+
+    staffId int(20) not null,
+    eId int(20) not null,
+    branch varchar(10) not null,
+    hodId int(20) not null,
+    csv_path varchar(100) not null, 
+    isApproved int(5) not null,
+    foreign key (eId) references events(eId) ON DELETE CASCADE,
+    foreign key (staffId) references staff(sId) ON DELETE CASCADE,
+    foreign key (hodId) references staff(sId) ON DELETE CASCADE 
+
+)ENGINE=InnoDB;
+
+
+insert into 
+
+select branch from staff where role = "hod" and sId in (select branch from staff where sId = );
+
+
+create table principal_approval ( 
+
+    staffId int(20) not null,
+    eId int(20) not null,
+    branch varchar(10) not null, 
+    hodId int(20) not null, 
+    csv_path varchar(100) not null, 
+    isApproved int(5) not null,
+    foreign key (eId) references events(eId) ON DELETE CASCADE, 
+    foreign key (staffId) references staff(sId) ON DELETE CASCADE,
+    foreign key (hodId) references staff(sId) ON DELETE CASCADE 
+
+)Engine=InnoDB;
+
+
+create table staff_club_rel( 
+
+    sId int(20) not null,
+    club varchar(20) not null,
+    foreign key (sId) references staff(sId) ON DELETE CASCADE
+)Engine=InnoDB;
+
+
+//Insertion
+
+insert into student values("Nishant98","Nishant","Nimbalkar","Nimbalkar98@","nimbalkarnishant98@gmail.com",7775026761,"IT","TE");
+
+insert into events(name,date,club,year,faculty) values("Swat_the_bug","2019-02-27","STC","2019","mahalaxmi");
+
+insert into stud_event values("Nishant987",503,9763070993,"0f1350425491b1f8b98312450ba8e7b0e56d7962");
+
+insert into stud_event values("Nishant987",503,"1234","abcd");
+
+
+//username , club
+select certificateId from stud_event where eId in(select eId from events where club = "Domain");
+
+select * from events where club = "CSI" and eId in (select eId from stud_event where username = "Nishant987");
+
+select certificateId from stud_event where eId in (select eId from events where club = "CSI" and eId in (select eId from stud_event where username = "Nishant987"));
+
+
+select name,club from events where eId in(select eId from stud_event where username = "Nishant987");
+
+select count(rId) from request_list where username = "Nishant987";
+
+select company,name from recruiter where rId in (select rId from request_list where username = "Nishant987");
+select name,club from events where eId in (select eId from request_list where username = "Nishant987");
+
+select * from events where club = "csi" and eId in (select eId from stud_event where username = "Nishant987");"
