@@ -1,4 +1,4 @@
-/*const Web3 = require('web3');
+const Web3 = require('web3');
 
 
 //Web Connection
@@ -92,4 +92,4 @@ web3.eth.defaultAccount = "0xc30d881fcc531c6d88eb9d64732001f28ed0de72";
 
 module.exports.web3 = web3; 
 module.exports.contractInstance = contractInstance;
-*/
+
